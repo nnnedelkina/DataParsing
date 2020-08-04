@@ -8,7 +8,6 @@ import re
 from datetime import date
 import json
 
-# Внимание, код еще дорабатывается, есть ошибка с прокруткой, окончательная версия будет в течение часа
 
 config = { # можно приделать загрузку с json-а
     'link': 'https://www.mvideo.ru/',
@@ -24,12 +23,11 @@ def parse_hits_from_mvideo_ru(config):
     hits_dict = {}
     hits_count = 0
     for s in range(config['max_pages']):
-        time.sleep(3)
+        time.sleep(5)
         hits_block = driver.find_elements_by_xpath(
             "//div[contains(text(),'Хиты продаж')]/../../../div[@class='gallery-layout sel-hits-block ']")
         if len(hits_block) == 0:
             break
-        time.sleep(1)
         hits_block = hits_block[0]
         items = hits_block.find_elements_by_xpath(".//li[contains(@class, 'gallery-list-item')]//a[contains(@class, 'sel-product-tile-title')]")
         if len(items) == 0:
@@ -50,6 +48,8 @@ def parse_hits_from_mvideo_ru(config):
         next_btn = hits_block.find_elements_by_xpath(".//a[@class='next-btn sel-hits-button-next']")
         if len(next_btn) == 0:
             break
+        ActionChains(driver).move_to_element(next_btn[0]).perform()
+        time.sleep(1)
         next_btn[0].click()
 
     return list(hits_dict.values())
@@ -57,7 +57,7 @@ def parse_hits_from_mvideo_ru(config):
 
 driver = webdriver.Chrome()
 hits = parse_hits_from_mvideo_ru(config)
-#driver.close()
+driver.close()
 pprint(hits)
 
 client = MongoClient('127.0.0.1', 27017)
