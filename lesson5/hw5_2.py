@@ -8,9 +8,7 @@ import re
 from datetime import date
 import json
 
-main_link = 'https://www.mvideo.ru/'
-
-
+# Внимание, код еще дорабатывается, есть ошибка с прокруткой, окончательная версия будет в течение часа
 
 config = { # можно приделать загрузку с json-а
     'link': 'https://www.mvideo.ru/',
